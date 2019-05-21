@@ -28,9 +28,12 @@ Notes:
 * With HDMI to USB3 connection the resolution can be set to 1920 x 1080 at 30 Hz
 
 ## Equirectangular projection
+Test with live images:
 ```
 roslaunch ricoh_camera test_eqrect_python_live.launch
 ```
+
+Test with a bag file (set the path in the launch file):
 ```
 roslaunch ricoh_camera test_eqrect_python_bag.launch
 ```
