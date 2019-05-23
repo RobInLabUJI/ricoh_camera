@@ -1,6 +1,7 @@
 <launch>
   <group ns="cam_1">
     <node pkg="ricoh_camera" type="convert_eqrect.py" name="convert" output="screen">
+      <param name="calib_format" value="camodocal"/>
       <param name="front_calib" value="$(find ricoh_camera)/config/front_camera_calib.yaml"/>
       <param name="back_calib"  value="$(find ricoh_camera)/config/back_camera_calib.yaml"/>
     </node>

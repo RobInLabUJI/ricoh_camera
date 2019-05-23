@@ -1,0 +1,10 @@
+<launch>
+  <group ns="cam_1_k">
+    <node pkg="ricoh_camera" type="convert_eqrect.py" name="convert" output="screen">
+      <param name="calib_format" value="kalibr"/>
+      <param name="front_calib" value="$(find ricoh_camera)/config/camchain-front_camera.yaml"/>
+      <param name="back_calib"  value="$(find ricoh_camera)/config/camchain-back_camera.yaml"/>
+    </node>
+  </group>
+  <node pkg="rosbag" type="play" name="rosbag_k" args="--loop /home/ecervera/Desktop/2019-05-21-11-30-12.bag /cam_1/image_raw:=/cam_1_k/image_raw"/>
+</launch>
