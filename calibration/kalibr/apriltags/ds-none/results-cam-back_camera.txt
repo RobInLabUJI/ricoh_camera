@@ -1,0 +1,21 @@
+Calibration results 
+====================
+Camera-system parameters:
+	cam0 (/cam_1/image_back_raw):
+	 type: <class 'aslam_cv.libaslam_cv_python.DoubleSphereCameraGeometry'>
+	 distortion: [] +- []
+	 projection: [  -0.02065203    0.65206297  184.81551374  183.45761307  315.43900256
+  320.44913322] +- [ 0.0031468   0.0005786   0.08063603  0.08135468  0.41962293  0.43235795]
+	 reprojection error: [0.000041, 0.000014] +- [0.247175, 0.207729]
+
+
+
+Target configuration
+====================
+
+  Type: aprilgrid
+  Tags: 
+    Rows: 6
+    Cols: 4
+    Size: 0.035 [m]
+    Spacing 0.007 [m]

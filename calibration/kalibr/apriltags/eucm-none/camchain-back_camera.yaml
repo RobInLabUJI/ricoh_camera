@@ -1,0 +1,9 @@
+cam0:
+  cam_overlaps: []
+  camera_model: eucm
+  distortion_coeffs: []
+  distortion_model: none
+  intrinsics: [0.6651255231986904, 0.9832740725600772, 188.58744423127763, 187.0085253744428,
+    315.4840490556649, 320.27098689067213]
+  resolution: [640, 640]
+  rostopic: /cam_1/image_back_raw
