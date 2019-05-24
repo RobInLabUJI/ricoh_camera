@@ -31,6 +31,26 @@ Notes:
 * With USB connection the frequency is limited to 15 Hz
 * With HDMI to USB3 connection the resolution can be set to 1920 x 1080 at 30 Hz
 
+### Visualization with rviz
+
+This package can be used for visualization on a skysphere with rviz: [https://github.com/RobInLabUJI/rviz_textured_sphere](https://github.com/RobInLabUJI/rviz_textured_sphere)
+
+Clone and build the package in your workspace:
+```
+cd <YOUR_WORKSPACE>/src
+git clone https://github.com/RobInLabUJI/rviz_textured_sphere.git
+cd ..
+catkin_make
+```
+
+Launch the camera streaming and visualization with:
+```
+roslaunch ricoh_camera capture.launch
+roslaunch rviz_textured_sphere demo.launch
+```
+
+Note: the images are projected without any calibration.
+
 ## Equirectangular projection
 Test with live images:
 ```
