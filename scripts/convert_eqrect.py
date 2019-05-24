@@ -82,10 +82,14 @@ def callback(data):
     front_img = image[0:image_size, 0:image_size]
     back_img  = image[0:image_size, image_size:2*image_size]
 
-    front_eqimg = equirectangular_projection(front_img, map1_f, map2_f)
-    back_eqimg  = equirectangular_projection(back_img,  map1_b, map2_b)
+    front_eqimg = rotate_cw_90(equirectangular_projection(front_img, map1_f, map2_f))
+    back_eqimg  = rotate_cw_90(equirectangular_projection(back_img,  map1_b, map2_b))
 
-    both_eqimg = np.concatenate((rotate_cw_90(front_eqimg), rotate_cw_90(back_eqimg)), axis=1)
+    crop = 0
+    if crop > 0:
+        both_eqimg = np.concatenate((front_eqimg[:,crop:-crop,:], back_eqimg[:,crop:-crop,:]), axis=1)
+    else:
+        both_eqimg = np.concatenate((front_eqimg, back_eqimg), axis=1)
 
     panorama = np.roll(both_eqimg, 320, axis=1)
 
