@@ -9,7 +9,7 @@ on how to use this camera.
 
 ## Calibration
 
-See the [wiki](https://github.com/RobInLabUJI/ricoh_camera/wiki/Calibration).
+See the [wiki](wiki/Calibration).
 
 ## Testing
 
@@ -24,6 +24,8 @@ Default configuration:
 * Input device: `/dev/video0`
 * Resolution: 1280 x 720
 * Frequency: 30 Hz
+
+You can also [test the package with Docker](wiki/Use-with-Docker).
 
 Notes:
 * With USB connection the frequency is limited to 15 Hz
