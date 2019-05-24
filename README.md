@@ -57,14 +57,24 @@ Test with live images:
 roslaunch ricoh_camera test_eqrect_python_live.launch
 ```
 
-Test with a bag file (set the path in the launch file):
+Test with a bag file:
+
+First, record a bag file with (feel free to modify the duration and/or output file):
 ```
-roslaunch ricoh_camera test_eqrect_python_bag.launch
+roslaunch ricoh_camera capture.launch
+rosbag record --duration=15s /cam_1/image_raw --output-name=$HOME/Desktop/demo.bag
+```
+
+Then, test the projection with:
+```
+roslaunch ricoh_camera test_eqrect_python_bag.launch bag_file:=$HOME/Desktop/demo.bag
 ```
 
 Calibration files in:
 * `config/front_camera_calib.yaml`
 * `config/back_camera_calib.yaml`
+
+Note: make sure that parameter `split` is set to `False` in the `capture.launch` file.
 
 ### Example notebook
 Requisites:
