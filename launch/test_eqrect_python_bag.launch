@@ -1,4 +1,5 @@
 <launch>
+  <arg name="bag_file" />
   <group ns="cam_1">
     <node pkg="ricoh_camera" type="convert_eqrect.py" name="convert" output="screen">
       <param name="calib_format" value="camodocal"/>
@@ -6,5 +7,5 @@
       <param name="back_calib"  value="$(find ricoh_camera)/config/back_camera_calib.yaml"/>
     </node>
   </group>
-  <node pkg="rosbag" type="play" name="rosbag" args="--loop /home/ecervera/Desktop/2019-05-21-11-30-12.bag"/>
+  <node pkg="rosbag" type="play" name="rosbag" args="--loop $(arg bag_file)"/>
 </launch>
