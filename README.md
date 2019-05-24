@@ -2,6 +2,8 @@
 
 ROS package for the [Ricoh Theta S omnidirectional camera](https://theta360.com/en/about/theta/s.html).
 
+Tested with [ROS Kinetic](http://wiki.ros.org/kinetic).
+
 The [user guide](https://support.theta360.com/en/manual/s/index.html) provides more detailed explanations 
 on how to use this camera.
 
