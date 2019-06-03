@@ -32,15 +32,15 @@ def read_ucm_params_camodocal(filename):
     xi = np.array([data['mirror_parameters']['xi']])
     return xi, K, D
 
-def read_ucm_params_kalibr(filename):
+def read_ucm_params_kalibr(filename, camid='cam0'):
     with open(filename, 'r') as stream:
         try:
             data = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
-    dp = data['cam0']['distortion_coeffs']
+    dp = data[camid]['distortion_coeffs']
     D = np.array(dp)
-    pp = data['cam0']['intrinsics']
+    pp = data[camid]['intrinsics']
     K = np.eye(3)
     K[0][0] = pp[1]
     K[1][1] = pp[2]
@@ -91,8 +91,11 @@ def callback(data):
     else:
         both_eqimg = np.concatenate((front_eqimg, back_eqimg), axis=1)
 
-    panorama = np.roll(both_eqimg, 320, axis=1)
+    panorama = np.roll(both_eqimg, ROLL, axis=1)
 
+    if FLIP:
+        panorama = cv2.flip(panorama, flipCode=-1)
+    
     image_message = bridge.cv2_to_imgmsg(panorama, encoding="bgr8")
     stamp = rospy.Time.from_sec(time.time()) 
     image_message.header.stamp = stamp
@@ -103,36 +106,63 @@ def callback(data):
 if __name__ == '__main__':
     rospy.init_node('convert_eqrect', anonymous=True)
 
-    if rospy.has_param('~calib_format'):
-        calib_format = rospy.get_param('~calib_format')
-        options = ['camodocal', 'kalibr']
-        if not calib_format in options:
-            print("Error: unknown calibration format, calid options are %s" % options)
+    if rospy.has_param('~flip'):
+        FLIP = rospy.get_param('~flip')
+    else:
+        FLIP = False
+        
+    if rospy.has_param('~roll'):
+        ROLL = rospy.get_param('~roll')
+    else:
+        ROLL = 320
+        
+    if rospy.has_param('~camchain'):
+        camchain_file = rospy.get_param('~camchain')
+        if rospy.has_param('~front_cam_id'):
+            fcid = rospy.get_param('~front_cam_id')
+            xi_f, K_f, D_f = read_ucm_params_kalibr(camchain_file, fcid)
+            map1_f, map2_f = initRectifyMap(K_f, D_f, xi_f)
+        else:
+            print("Front camera id is missing.")
             sys.exit(-1)
+        if rospy.has_param('~back_cam_id'):
+            bcid = rospy.get_param('~back_cam_id')
+            xi_b, K_b, D_b = read_ucm_params_kalibr(camchain_file, bcid)
+            map1_b, map2_b = initRectifyMap(K_b, D_b, xi_b)
+        else:
+            print("Back camera id is missing.")
+            sys.exit(-1)        
     else:
-        calib_format = 'camodocal'
+        if rospy.has_param('~calib_format'):
+            calib_format = rospy.get_param('~calib_format')
+            options = ['camodocal', 'kalibr']
+            if not calib_format in options:
+                print("Error: unknown calibration format, calid options are %s" % options)
+                sys.exit(-1)
+        else:
+            calib_format = 'camodocal'
 
-    if rospy.has_param('~front_calib'):
-        params_file = rospy.get_param('~front_calib')
-        if calib_format == 'camodocal':
-            xi_f, K_f, D_f = read_ucm_params_camodocal(params_file)
-        elif calib_format == 'kalibr':
-            xi_f, K_f, D_f = read_ucm_params_kalibr(params_file)
-        map1_f, map2_f = initRectifyMap(K_f, D_f, xi_f)
-    else:
-        print("Front camera calibration file is missing.")
-        sys.exit(-1)
+        if rospy.has_param('~front_calib'):
+            params_file = rospy.get_param('~front_calib')
+            if calib_format == 'camodocal':
+                xi_f, K_f, D_f = read_ucm_params_camodocal(params_file)
+            elif calib_format == 'kalibr':
+                xi_f, K_f, D_f = read_ucm_params_kalibr(params_file)
+            map1_f, map2_f = initRectifyMap(K_f, D_f, xi_f)
+        else:
+            print("Front camera calibration file is missing.")
+            sys.exit(-1)
 
-    if rospy.has_param('~back_calib'):
-        params_file = rospy.get_param('~back_calib')
-        if calib_format == 'camodocal':
-            xi_b, K_b, D_b = read_ucm_params_camodocal(params_file)
-        elif calib_format == 'kalibr':
-            xi_b, K_b, D_b = read_ucm_params_kalibr(params_file)
-        map1_b, map2_b = initRectifyMap(K_b, D_b, xi_b)
-    else:
-        print("Back camera calibration file is missing.")
-        sys.exit(-1)
+        if rospy.has_param('~back_calib'):
+            params_file = rospy.get_param('~back_calib')
+            if calib_format == 'camodocal':
+                xi_b, K_b, D_b = read_ucm_params_camodocal(params_file)
+            elif calib_format == 'kalibr':
+                xi_b, K_b, D_b = read_ucm_params_kalibr(params_file)
+            map1_b, map2_b = initRectifyMap(K_b, D_b, xi_b)
+        else:
+            print("Back camera calibration file is missing.")
+            sys.exit(-1)
 
     bridge = CvBridge()
     sub = rospy.Subscriber("image_raw", Image, callback)
