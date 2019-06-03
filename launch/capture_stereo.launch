@@ -1,0 +1,18 @@
+<launch>
+  <node pkg="ricoh_camera" type="capture.py" name="capture" ns="cam_bottom">
+    <param name="video_input" value="0"/>
+    <param name="width"  value="1280"/>
+    <param name="height" value="720"/>
+    <param name="frequency" value="1"/>
+    <param name="split" value="True"/>
+    <param name="display" value="True"/>
+  </node>
+  <node pkg="ricoh_camera" type="capture.py" name="capture" ns="cam_top">
+    <param name="video_input" value="1"/>
+    <param name="width"  value="1280"/>
+    <param name="height" value="720"/>
+    <param name="frequency" value="1"/>
+    <param name="split" value="True"/>
+    <param name="display" value="True"/>
+  </node>
+</launch>
