@@ -1,0 +1,10 @@
+<launch>
+  <node pkg="ricoh_camera" type="capture_async.py" name="capture" ns="cam_1">
+    <param name="video_input" value="0"/>
+    <param name="width"  value="1280"/>
+    <param name="height" value="720"/>
+    <param name="frequency" value="30"/>
+    <param name="split" value="False"/>
+    <param name="display" value="True"/>
+  </node>
+</launch>

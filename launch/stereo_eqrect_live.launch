@@ -9,7 +9,7 @@
       <param name="display" value="False"/>
     </node>
     <node pkg="ricoh_camera" type="convert_eqrect.py" name="convert" output="screen">
-      <param name="camchain" value="$(find ricoh_camera)/config/camchain-2019-06-03-10-51-37.yaml"/>
+      <param name="camchain" value="$(find ricoh_camera)/config/camchain-2019-06-11-14-36-07.yaml"/>
       <param name="front_cam_id" value="cam3"/>
       <param name="back_cam_id"  value="cam2"/>
       <param name="flip" value="False"/>
@@ -26,7 +26,7 @@
       <param name="display" value="False"/>
     </node>
     <node pkg="ricoh_camera" type="convert_eqrect.py" name="convert" output="screen">
-      <param name="camchain" value="$(find ricoh_camera)/config/camchain-2019-06-03-10-51-37.yaml"/>
+      <param name="camchain" value="$(find ricoh_camera)/config/camchain-2019-06-11-14-36-07.yaml"/>
       <param name="front_cam_id" value="cam1"/>
       <param name="back_cam_id"  value="cam0"/>
       <param name="flip" value="True"/>
