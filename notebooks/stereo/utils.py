@@ -59,17 +59,17 @@ def initRectifyMap(K, D, xi):
     return map1, map2
 
 def equirectangular_projection(img, map1, map2):
-    undistorted_img = cv2.remap(img, map1, map2, cv2.INTER_LINEAR, cv2.BORDER_CONSTANT)
+    undistorted_img = rotate_ccw_90(cv2.remap(img, map1, map2, cv2.INTER_LINEAR, cv2.BORDER_CONSTANT))
     return undistorted_img
 
 def rotate_cw_90(img):
     img_t = cv2.transpose(img)
-    img_f = cv2.flip(img_t, flipCode=0)
+    img_f = cv2.flip(img_t, flipCode=1)
     return img_f
 
 def rotate_ccw_90(img):
     img_t = cv2.transpose(img)
-    img_f = cv2.flip(img_t, flipCode=1)
+    img_f = cv2.flip(img_t, flipCode=0)
     return img_f
 
 def rotate_180(img):
