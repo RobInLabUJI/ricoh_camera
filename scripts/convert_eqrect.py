@@ -97,8 +97,8 @@ def callback(data):
         panorama = cv2.flip(panorama, flipCode=-1)
     
     image_message = bridge.cv2_to_imgmsg(panorama, encoding="bgr8")
-    stamp = rospy.Time.from_sec(time.time()) 
-    image_message.header.stamp = stamp
+    #stamp = rospy.Time.from_sec(time.time()) 
+    image_message.header.stamp = data.header.stamp
     pub.publish(image_message)
     cv2.imshow("Panorama", panorama)
     cv2.waitKey(1)

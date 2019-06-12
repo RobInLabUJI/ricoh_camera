@@ -1,0 +1,11 @@
+<launch>
+  <group ns="cam_top">
+    <node pkg="topic_tools" type="drop" name="drop" output="screen" args="image_eqrect 5 6">
+    </node>
+  </group>
+  <group ns="cam_bottom">
+    <node pkg="topic_tools" type="drop" name="drop" output="screen" args="image_eqrect 5 6">
+    </node>
+  </group>
+  <node pkg="ricoh_camera" type="feature_matcher.py" name="feature_matcher"/>
+</launch>
