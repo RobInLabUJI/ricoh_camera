@@ -7,5 +7,5 @@
     <node pkg="topic_tools" type="drop" name="drop" output="screen" args="image_eqrect 5 6">
     </node>
   </group>
-  <node pkg="ricoh_camera" type="feature_matcher.py" name="feature_matcher"/>
+  <node pkg="ricoh_camera" type="feature_matcher.py" name="feature_matcher" output="screen"/>
 </launch>
