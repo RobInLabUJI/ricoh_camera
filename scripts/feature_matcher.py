@@ -8,6 +8,24 @@ import message_filters
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 
+def findMatches(img_top, img_btm, max_dist=50, display=None):
+    orb = cv2.ORB_create()
+    kpt = orb.detect(img_top, None)
+    kpt, dest = orb.compute(img_top, kpt)
+    kpb = orb.detect(img_btm, None)
+    kpb, desb = orb.compute(img_btm, kpb)
+
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(dest, desb)
+    matches = [m for m in matches if m.distance<max_dist]
+    matches = sorted(matches, key = lambda x:x.distance)
+
+    if display is None:
+    	pass
+    else:
+	    img_disp = cv2.drawMatches(img_top, kpt, img_btm, kpb, matches, None, flags=2)
+	    cv2.imshow(display, img_disp)
+
 def callback(top_image, btm_image):
     #print(top_image.header.stamp)
     try:
@@ -22,79 +40,22 @@ def callback(top_image, btm_image):
     MAX_DIST = 50
     
     top_bf_stitch = cv2.cvtColor(top_panorama[:,160:480], cv2.COLOR_BGR2GRAY)
-    btm_b_center = cv2.cvtColor(btm_panorama[:,160:480], cv2.COLOR_BGR2GRAY)
-    
-    orb = cv2.ORB_create()
-    kpt = orb.detect(top_bf_stitch, None)
-    kpt, dest = orb.compute(top_bf_stitch, kpt)
-    kpb = orb.detect(btm_b_center, None)
-    kpb, desb = orb.compute(btm_b_center, kpb)
-    
-    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-    matches = bf.match(dest, desb)
-    matches = [m for m in matches if m.distance<MAX_DIST]
-    matches = sorted(matches, key = lambda x:x.distance)
-
-    img3 = cv2.drawMatches(top_bf_stitch, kpt, btm_b_center, kpb, matches, None, flags=2)
-
-    cv2.imshow("Feature matching top bf", img3)
+    btm_b_center  = cv2.cvtColor(btm_panorama[:,160:480], cv2.COLOR_BGR2GRAY)
+    findMatches(top_bf_stitch, btm_b_center, MAX_DIST, "Top BF stitch")
 
     top_fb_stitch = cv2.cvtColor(top_panorama[:,800:1120], cv2.COLOR_BGR2GRAY)
-    btm_f_center = cv2.cvtColor(btm_panorama[:,800:1120], cv2.COLOR_BGR2GRAY)
-    
-    orb = cv2.ORB_create()
-    kpt = orb.detect(top_fb_stitch, None)
-    kpt, dest = orb.compute(top_fb_stitch, kpt)
-    kpb = orb.detect(btm_f_center, None)
-    kpb, desb = orb.compute(btm_f_center, kpb)
-    
-    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-    matches = bf.match(dest, desb)
-    matches = [m for m in matches if m.distance<MAX_DIST]
-    matches = sorted(matches, key = lambda x:x.distance)
-
-    img3 = cv2.drawMatches(top_fb_stitch, kpt, btm_f_center, kpb, matches, None, flags=2)
-
-    cv2.imshow("Feature matching top fb", img3)
+    btm_f_center  = cv2.cvtColor(btm_panorama[:,800:1120], cv2.COLOR_BGR2GRAY)
+    findMatches(top_fb_stitch, btm_f_center, MAX_DIST, "Top FB stitch")
 
     btm_bf_stitch = cv2.cvtColor(btm_panorama[:,480:800], cv2.COLOR_BGR2GRAY)
-    top_f_center = cv2.cvtColor(top_panorama[:,480:800], cv2.COLOR_BGR2GRAY)
-
-    orb = cv2.ORB_create()
-    kpt = orb.detect(top_f_center, None)
-    kpt, dest = orb.compute(top_f_center, kpt)
-    kpb = orb.detect(btm_bf_stitch, None)
-    kpb, desb = orb.compute(btm_bf_stitch, kpb)
-    
-    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-    matches = bf.match(dest, desb)
-    matches = [m for m in matches if m.distance<MAX_DIST]
-    matches = sorted(matches, key = lambda x:x.distance)
-
-    img3 = cv2.drawMatches(top_f_center, kpt, btm_bf_stitch, kpb, matches, None, flags=2)
-
-    cv2.imshow("Feature matching bottom bf", img3)
+    top_f_center  = cv2.cvtColor(top_panorama[:,480:800], cv2.COLOR_BGR2GRAY)
+    findMatches(top_f_center, btm_bf_stitch, MAX_DIST, "Bottom BF stitch")
 
     btm_fb_stitch = cv2.cvtColor(np.concatenate((btm_panorama[:,1120:1280],btm_panorama[:,0:160]), axis=1), cv2.COLOR_BGR2GRAY)
-    top_b_center = cv2.cvtColor(np.concatenate((top_panorama[:,1120:1280],top_panorama[:,0:160]), axis=1), cv2.COLOR_BGR2GRAY)
+    top_b_center  = cv2.cvtColor(np.concatenate((top_panorama[:,1120:1280],top_panorama[:,0:160]), axis=1), cv2.COLOR_BGR2GRAY)
+    findMatches(top_b_center, btm_fb_stitch, MAX_DIST, "Bottom FB stitch")
 
-    orb = cv2.ORB_create()
-    kpt = orb.detect(top_b_center, None)
-    kpt, dest = orb.compute(top_b_center, kpt)
-    kpb = orb.detect(btm_fb_stitch, None)
-    kpb, desb = orb.compute(btm_fb_stitch, kpb)
-    
-    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-    matches = bf.match(dest, desb)
-    matches = [m for m in matches if m.distance<MAX_DIST]
-    matches = sorted(matches, key = lambda x:x.distance)
-
-    img3 = cv2.drawMatches(top_b_center, kpt, btm_fb_stitch, kpb, matches, None, flags=2)
-
-    cv2.imshow("Feature matching bottom fb", img3)
-
-    cv2.waitKey(1)    
-
+    cv2.waitKey(1)
 
 if __name__ == '__main__':
     rospy.init_node('feature_matcher', anonymous=True)
