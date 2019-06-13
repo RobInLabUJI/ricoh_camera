@@ -55,7 +55,8 @@ def initRectifyMap(K, D, xi):
     theta = np.radians(90)
     c, s = np.cos(theta), np.sin(theta)
     R = np.array(((c,-s, 0), (s, c, 0), (0, 0, 1)))
-    map1, map2 = cv2.omnidir.initUndistortRectifyMap(K, D, xi, R, Knew, new_size, cv2.CV_16SC2, flags)
+    map1, map2 = cv2.omnidir.initUndistortRectifyMap(K, D, xi, R, Knew, new_size, cv2.CV_32FC1, flags)
+    #map1, map2 = cv2.omnidir.initUndistortRectifyMap(K, D, xi, R, Knew, new_size, cv2.CV_16SC2, flags)
     return map1, map2
 
 def equirectangular_projection(img, map1, map2):
