@@ -1,5 +1,7 @@
 <launch>
   <node pkg="ricoh_camera" type="capture_stereo.py" name="capture">
+    <param name="video_input_bottom" value="0"/>
+    <param name="video_input_top" value="1"/>
     <param name="width"  value="1280"/>
     <param name="height" value="720"/>
     <param name="frequency" value="30"/>

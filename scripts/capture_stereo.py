@@ -104,13 +104,13 @@ def talker():
 if __name__ == '__main__':
     rospy.init_node('capture', anonymous=True)
 
-    if rospy.has_param('~video_input_1'):
-        video_input_1 = rospy.get_param('~video_input_1')
+    if rospy.has_param('~video_input_bottom'):
+        video_input_1 = rospy.get_param('~video_input_bottom')
     else:
         video_input_1 = 0
 
-    if rospy.has_param('~video_input_2'):
-        video_input_2 = rospy.get_param('~video_input_2')
+    if rospy.has_param('~video_input_top'):
+        video_input_2 = rospy.get_param('~video_input_top')
     else:
         video_input_2 = 1
 
