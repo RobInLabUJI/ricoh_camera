@@ -1,5 +1,5 @@
 <launch>
-  <arg name="bag_file" />
+  <arg name="bag_file" default="$(env HOME)/Desktop/2019-05-21-11-30-12.bag"/>
   <group ns="cam_1">
     <node pkg="ricoh_camera" type="convert_eqrect.py" name="convert" output="screen">
       <param name="calib_format" value="camodocal"/>
