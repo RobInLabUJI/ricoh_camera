@@ -7,6 +7,7 @@ import rospy
 import message_filters
 from sensor_msgs.msg import Image
 from std_srvs.srv import Empty
+import os
 
 from cv_bridge import CvBridge, CvBridgeError
 
@@ -71,10 +72,11 @@ def callback(top_image, btm_image):
     cv2.waitKey(1)
 
 def handle_save(req):
-    np.save('/home/ecervera/Desktop/p_tbf', p_tbf)
-    np.save('/home/ecervera/Desktop/p_tfb', p_tfb)
-    np.save('/home/ecervera/Desktop/p_bbf', p_bbf)
-    np.save('/home/ecervera/Desktop/p_bfb', p_bfb)
+    folder = os.getenv("HOME") + "/Desktop/"
+    np.save(folder + 'p_tbf', p_tbf)
+    np.save(folder + 'p_tfb', p_tfb)
+    np.save(folder + 'p_bbf', p_bbf)
+    np.save(folder + 'p_bfb', p_bfb)
     return []
 
 if __name__ == '__main__':

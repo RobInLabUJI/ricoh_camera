@@ -17,5 +17,5 @@
       <param name="roll" value="0"/>
     </node>
   </group>
-  <node pkg="rosbag" type="play" name="rosbag" args="--loop /home/ecervera/Desktop/demo_stereo_sync_cropped.bag"/>
+  <node pkg="rosbag" type="play" name="rosbag" args="--loop $(env HOME)/Desktop/demo_stereo_sync_cropped.bag"/>
 </launch>
