@@ -1,0 +1,29 @@
+<launch>
+  <node pkg="ricoh_camera" type="capture_raw_stereo.py" name="capture">
+    <param name="width"  value="1280"/>
+    <param name="height" value="720"/>
+    <param name="frequency" value="30"/>
+    <param name="skip" value="0"/>
+    <param name="display" value="False"/>
+  </node>
+
+  <group ns="cam_top">
+    <node pkg="ricoh_camera" type="convert_raw2eqrect.py" name="convert" output="screen">
+      <param name="camchain" value="$(find ricoh_camera)/config/camchain-2019-06-20-14-29-45.yaml"/>
+      <param name="front_cam_id" value="cam3"/>
+      <param name="back_cam_id"  value="cam2"/>
+      <param name="flip" value="False"/>
+      <param name="roll" value="320"/>
+    </node>
+  </group>
+
+  <group ns="cam_bottom">
+    <node pkg="ricoh_camera" type="convert_raw2eqrect.py" name="convert" output="screen">
+      <param name="camchain" value="$(find ricoh_camera)/config/camchain-2019-06-20-14-29-45.yaml"/>
+      <param name="front_cam_id" value="cam1"/>
+      <param name="back_cam_id"  value="cam0"/>
+      <param name="flip" value="True"/>
+      <param name="roll" value="0"/>
+    </node>
+  </group>
+</launch>

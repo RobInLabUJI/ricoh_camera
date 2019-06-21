@@ -1,0 +1,22 @@
+<launch>
+  <group ns="cam_top">
+    <node pkg="ricoh_camera" type="convert_raw2eqrect.py" name="convert" output="screen">
+      <param name="camchain" value="$(find ricoh_camera)/config/camchain-2019-06-20-14-29-45.yaml"/>
+      <param name="front_cam_id" value="cam3"/>
+      <param name="back_cam_id"  value="cam2"/>
+      <param name="flip" value="False"/>
+      <param name="roll" value="320"/>
+    </node>
+  </group>
+
+  <group ns="cam_bottom">
+    <node pkg="ricoh_camera" type="convert_raw2eqrect.py" name="convert" output="screen">
+      <param name="camchain" value="$(find ricoh_camera)/config/camchain-2019-06-20-14-29-45.yaml"/>
+      <param name="front_cam_id" value="cam1"/>
+      <param name="back_cam_id"  value="cam0"/>
+      <param name="flip" value="True"/>
+      <param name="roll" value="0"/>
+    </node>
+  </group>
+  <node pkg="rosbag" type="play" name="rosbag" args="--clock --loop $(env HOME)/Desktop/raw_stereo.bag"/>
+</launch>

@@ -1,0 +1,8 @@
+<launch>
+<group ns="cam_top">
+  <node pkg="ricoh_camera" type="splitter.py" name="splitter" />
+</group>
+<group ns="cam_bottom">
+  <node pkg="ricoh_camera" type="splitter.py" name="splitter" />
+</group>
+</launch>
