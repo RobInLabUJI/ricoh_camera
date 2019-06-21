@@ -18,5 +18,5 @@
       <param name="roll" value="0"/>
     </node>
   </group>
-  <node pkg="rosbag" type="play" name="rosbag" args="--clock --loop $(env HOME)/Desktop/raw_stereo.bag"/>
+  <node pkg="rosbag" type="play" name="rosbag" args="$(env HOME)/Desktop/raw_stereo.orig.bag"/>
 </launch>
