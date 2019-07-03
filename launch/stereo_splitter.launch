@@ -1,0 +1,25 @@
+<launch>
+
+<group ns="top">
+  <node pkg="ricoh_camera" type="splitter.py" name="splitter" output="screen" />
+  <node name="image_front_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="front/image_raw" />
+  </node>
+  <node name="image_back_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="back/image_raw" />
+  </node>
+</group>
+
+<group ns="bottom">
+  <node pkg="ricoh_camera" type="splitter.py" name="splitter" output="screen">
+    <param name="invert" value="True" />
+  </node>
+  <node name="image_front_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="front/image_raw" />
+  </node>
+  <node name="image_back_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="back/image_raw" />
+  </node>
+</group>
+
+</launch>

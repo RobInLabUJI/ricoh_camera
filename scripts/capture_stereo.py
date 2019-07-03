@@ -17,8 +17,8 @@ def talker():
     image_size = video_resolution / 2
 
     bridge = CvBridge()
-    pub1 = rospy.Publisher('cam_bottom/image_raw', Image, queue_size=10)
-    pub2 = rospy.Publisher('cam_top/image_raw',    Image, queue_size=10)
+    pub1 = rospy.Publisher('bottom/image_raw', Image, queue_size=10)
+    pub2 = rospy.Publisher('top/image_raw',    Image, queue_size=10)
     rate = rospy.Rate(frequency)
     while not rospy.is_shutdown():
         cap1.grab()
