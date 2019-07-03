@@ -1,18 +1,23 @@
 <launch>
-  <node pkg="ricoh_camera" type="capture.py" name="capture" ns="cam_bottom">
-    <param name="video_input" value="0"/>
-    <param name="width"  value="1280"/>
-    <param name="height" value="720"/>
-    <param name="frequency" value="30"/>
-    <param name="split" value="True"/>
-    <param name="display" value="True"/>
+  
+  <arg name="video_input_bottom" default="0" />
+  <arg name="video_input_top"    default="1" />
+  <arg name="resolution"  default="1280"/>
+  <arg name="frequency"   default="30"/>
+
+  <node pkg="ricoh_camera" type="capture_stereo.py" name="capture">
+    <param name="video_input_bottom" value="$(arg video_input_bottom)"/>
+    <param name="video_input_top"    value="$(arg video_input_top)"/>
+    <param name="resolution" value="$(arg resolution)"/>
+    <param name="frequency"  value="$(arg frequency)"/>
   </node>
-  <node pkg="ricoh_camera" type="capture.py" name="capture" ns="cam_top">
-    <param name="video_input" value="1"/>
-    <param name="width"  value="1280"/>
-    <param name="height" value="720"/>
-    <param name="frequency" value="30"/>
-    <param name="split" value="True"/>
-    <param name="display" value="True"/>
+
+  <node name="image_view_bottom" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="cam_bottom/image_raw" />
   </node>
+
+  <node name="image_view_top" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="cam_top/image_raw" />
+  </node>
+
 </launch>
