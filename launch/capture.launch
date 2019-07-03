@@ -1,10 +1,13 @@
 <launch>
-  <node pkg="ricoh_camera" type="capture.py" name="capture" ns="cam_1">
-    <param name="video_input" value="0"/>
-    <param name="width"  value="1280"/>
-    <param name="height" value="720"/>
-    <param name="frequency" value="30"/>
-    <param name="split" value="False"/>
-    <param name="display" value="True"/>
+  <arg name="video_input" default="0" />
+  <arg name="resolution"  default="1280"/>
+  <arg name="frequency"   default="30"/>
+  <node pkg="ricoh_camera" type="capture.py" name="capture">
+    <param name="video_input" value="$(arg video_input)"/>
+    <param name="resolution"  value="$(arg resolution)"/>
+    <param name="frequency"   value="$(arg frequency)"/>
+  </node>
+  <node name="image_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="image_raw" />
   </node>
 </launch>
