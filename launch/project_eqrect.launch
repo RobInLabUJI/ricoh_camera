@@ -1,0 +1,11 @@
+<launch>
+
+  <node pkg="ricoh_camera" type="project_eqrect.py" name="project" output="screen">
+    <param name="front_calib" value="$(find ricoh_camera)/config/camchain-top_2019-07-04-09-58-07.yaml"/>
+    <param name="back_calib"  value="$(find ricoh_camera)/config/camchain-top_2019-07-04-10-01-46.yaml"/>
+  </node>
+  <node name="image_eqrect_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="image_rect" />
+  </node>
+
+</launch>
