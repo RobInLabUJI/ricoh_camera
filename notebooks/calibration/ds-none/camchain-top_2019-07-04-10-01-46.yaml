@@ -1,0 +1,9 @@
+cam0:
+  cam_overlaps: []
+  camera_model: ds
+  distortion_coeffs: []
+  distortion_model: none
+  intrinsics: [-0.24643326223873377, 0.5834028611392951, 145.3438077477816, 143.97724472377277,
+    316.98089370279376, 319.59089847574364]
+  resolution: [640, 640]
+  rostopic: /back/image_raw
