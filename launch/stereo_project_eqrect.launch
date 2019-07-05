@@ -1,10 +1,16 @@
 <launch>
+  <arg name="rho_limit_top"    default="95" />
+  <arg name="rho_limit_bottom" default="95" />
+  <arg name="baseline_top"     default="0.013" />
+  <arg name="baseline_bottom"  default="0.013" />
 
 <group ns="top">
   <node pkg="ricoh_camera" type="project_eqrect.py" name="project" output="screen">
     <param name="camchain" value="$(find ricoh_camera)/config/camchain-stereo_2019-07-05-08-24-01.yaml"/>
     <param name="front_cam_id"  value="cam3"/>
     <param name="back_cam_id"   value="cam2"/>
+    <param name="rho_limit" value="$(arg rho_limit_top)" />
+    <param name="baseline"  value="$(arg baseline_top)" />
   </node>
   <node name="image_eqrect_view" pkg="image_view" type="image_view" respawn="false" output="screen">
     <remap from="image" to="image_rect" />
@@ -16,6 +22,8 @@
     <param name="camchain" value="$(find ricoh_camera)/config/camchain-stereo_2019-07-05-08-24-01.yaml"/>
     <param name="front_cam_id"  value="cam1"/>
     <param name="back_cam_id"   value="cam0"/>
+    <param name="rho_limit" value="$(arg rho_limit_bottom)" />
+    <param name="baseline"  value="$(arg baseline_bottom)" />
   </node>
   <node name="image_eqrect_view" pkg="image_view" type="image_view" respawn="false" output="screen">
     <remap from="image" to="image_rect" />

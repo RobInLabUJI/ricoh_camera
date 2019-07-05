@@ -121,16 +121,6 @@ def callback(front_imgmsg, back_imgmsg):
 
 if __name__ == '__main__':
     rospy.init_node('project_eqrect', anonymous=True)
-
-    #if rospy.has_param('~flip'):
-    #    FLIP = rospy.get_param('~flip')
-    #else:
-    #    FLIP = False
-        
-    #if rospy.has_param('~roll'):
-    #    ROLL = rospy.get_param('~roll')
-    #else:
-    #    ROLL = 320
         
     if rospy.has_param('~camchain'):
         camchain_file = rospy.get_param('~camchain')
@@ -161,12 +151,19 @@ if __name__ == '__main__':
             print("Back camera calibration file is missing.")
             sys.exit(-1)
 
-    #map1_f, map2_f = initRectifyMap(K_f, D_f, xi_f)
-    #map1_b, map2_b = initRectifyMap(K_b, D_b, xi_b)
+    if rospy.has_param('~rho_limit'):
+        rho_limit = rospy.get_param('~rho_limit')
+    else:
+        rho_limit = 95.0
 
-    rho_limit = np.pi/2 * 95.0/90
+    if rospy.has_param('~baseline'):
+        baseline = rospy.get_param('~baseline')
+    else:
+        baseline = 0.013
+
+    rho_limit = np.pi/2 * rho_limit/90.0
     map1_f, map2_f, f_mask = create_spherical_proj(K_f, xi_f, D_f, 0, 0, rho_limit)
-    map1_b, map2_b, b_mask = create_spherical_proj(K_b, xi_b, D_b, np.pi, 0.0, rho_limit)
+    map1_b, map2_b, b_mask = create_spherical_proj(K_b, xi_b, D_b, np.pi, -baseline, rho_limit)
     intersect = np.array(f_mask * b_mask, dtype=np.uint8)
     not_intersect = 1 - intersect
 
