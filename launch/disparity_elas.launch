@@ -1,0 +1,7 @@
+<launch>
+
+  <node pkg="ricoh_camera" type="disparity_elas.py" name="disparity_elas" output="screen" />
+  <node name="elas_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="image_disparity" />
+  </node>
+</launch>

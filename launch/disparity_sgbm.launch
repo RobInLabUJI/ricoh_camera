@@ -1,0 +1,7 @@
+<launch>
+
+  <node pkg="ricoh_camera" type="disparity_sgbm.py" name="disparity_sgbm" output="screen" />
+  <node name="sgbm_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="image_disparity" />
+  </node>
+</launch>
