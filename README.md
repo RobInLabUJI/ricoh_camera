@@ -2,7 +2,7 @@
 
 ROS package for the [Ricoh Theta S omnidirectional camera](https://theta360.com/en/about/theta/s.html).
 
-Tested with [Ubutnu 16.04](http://releases.ubuntu.com/16.04/) and [ROS Kinetic](http://wiki.ros.org/kinetic).
+Tested with [Ubuntu 16.04](http://releases.ubuntu.com/16.04/) and [ROS Kinetic](http://wiki.ros.org/kinetic).
 
 The [user guide](https://support.theta360.com/en/manual/s/index.html) provides more detailed explanations 
 on how to use this camera.
