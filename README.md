@@ -10,7 +10,7 @@ on how to use this camera.
 ## Installation
 
     python -m pip install --upgrade pip
-    python -m pip install --user jupyter matplotlib==1.16.3 bash_kernel
+    python -m pip install --user jupyter matplotlib==2.2.4 numpy==1.16.3 bash_kernel
     python -m bash_kernel.install
    
     cd Desktop
