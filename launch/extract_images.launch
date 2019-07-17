@@ -1,0 +1,37 @@
+<launch>
+  
+  <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/ricoh/Desktop/rosbags/stereo_2019-07-05-09-53-47.bag"/>
+
+  <node name="drop_bottom_front" pkg="topic_tools" type="drop" respawn="false" output="screen"
+    args="bottom/front/image_raw 99 100" />
+
+  <node name="drop_bottom_back" pkg="topic_tools" type="drop" respawn="false" output="screen"
+    args="bottom/back/image_raw 99 100" />
+
+  <node name="drop_top_front" pkg="topic_tools" type="drop" respawn="false" output="screen"
+    args="top/front/image_raw 99 100" />
+
+  <node name="drop_top_back" pkg="topic_tools" type="drop" respawn="false" output="screen"
+    args="top/back/image_raw 99 100" />
+
+  <node name="image_save_bottom_front" pkg="image_view" type="image_saver" respawn="false" output="screen">
+    <param name="filename_format" value ="bottom_front_%04d.png" />
+    <remap from="image" to="bottom/front/image_raw_drop" />
+  </node>
+
+  <node name="image_save_bottom_back" pkg="image_view" type="image_saver" respawn="false" output="screen">
+    <param name="filename_format" value ="bottom_back_%04d.png" />
+    <remap from="image" to="bottom/back/image_raw_drop" />
+  </node>
+
+  <node name="image_save_top_front" pkg="image_view" type="image_saver" respawn="false" output="screen">
+    <param name="filename_format" value ="top_front_%04d.png" />
+    <remap from="image" to="top/front/image_raw_drop" />
+  </node>
+
+  <node name="image_save_top_back" pkg="image_view" type="image_saver" respawn="false" output="screen">
+    <param name="filename_format" value ="top_back_%04d.png" />
+    <remap from="image" to="top/back/image_raw_drop" />
+  </node>
+
+</launch>

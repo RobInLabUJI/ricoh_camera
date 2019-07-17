@@ -1,0 +1,7 @@
+<launch>
+
+  <node pkg="ricoh_camera" type="depth_sgbm.py" name="depth_sgbm" output="screen" />
+  <node name="sgbm_depth_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="image_depth" />
+  </node>
+</launch>

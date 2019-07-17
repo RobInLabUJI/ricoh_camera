@@ -57,7 +57,7 @@ def callback(top_image, btm_image):
     )
     disp = stereo.compute(subimgL, subimgR).astype(np.float32) #/ 16.0
     output = rotate_ccw_90((disp-min_disp)/num_disp)
-    #output = np.roll(output, -dx, axis=1)
+    output = np.roll(output, -dx, axis=1)
 
     image_message = bridge.cv2_to_imgmsg(output, encoding="passthrough")
 
