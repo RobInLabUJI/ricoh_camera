@@ -7,6 +7,14 @@ Tested with [Ubuntu 16.04](http://releases.ubuntu.com/16.04/) and [ROS Kinetic](
 The [user guide](https://support.theta360.com/en/manual/s/index.html) provides more detailed explanations 
 on how to use this camera.
 
+## Requisites
+
+* Ubuntu 16.04
+* ROS Kinetic
+* Python Pip
+```
+    sudo apt install python-pip
+``` 
 ## Installation
 
     python -m pip install --upgrade pip
