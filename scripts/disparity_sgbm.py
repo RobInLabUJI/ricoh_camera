@@ -75,7 +75,7 @@ if __name__ == '__main__':
     top_image_sub = message_filters.Subscriber('/top/image_rect', Image)
     btm_image_sub = message_filters.Subscriber('/bottom/image_rect', Image)
 
-    ts = message_filters.ApproximateTimeSynchronizer([top_image_sub, btm_image_sub], 10, 0.005)
+    ts = message_filters.ApproximateTimeSynchronizer([top_image_sub, btm_image_sub], 10, 0.05)
     ts.registerCallback(callback)
     
     pub = rospy.Publisher('image_disparity', Image, queue_size=10)

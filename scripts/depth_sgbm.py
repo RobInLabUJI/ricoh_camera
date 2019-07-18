@@ -127,24 +127,21 @@ def callback(top_image, btm_image):
     #output = rotate_cw_90((disp-min_disp)/num_disp)
     
     distance = 0.35 * sinvnfs / np.sin(output*np.pi/640.0)
+    distance = np.clip(distance, 0, 20)
 
-    #depth = 0.35 * 640 / rotate_ccw_90(disp)
+    norm_dist = distance * 255 / 20
 
-    image_message = bridge.cv2_to_imgmsg(distance, encoding="passthrough")
+    image_message = bridge.cv2_to_imgmsg(norm_dist, encoding="passthrough")
 
     image_message.header.stamp = top_image.header.stamp
     pub.publish(image_message)
 
-    #pointcloud = xyzrgb_array_to_pointcloud2(sphere, imageRGB)
-    distance = np.clip(distance, 0, 20)
     xyz = np.array(sphere, copy=True)
     xyz[:,:,0] = xyz[:,:,0] * distance
     xyz[:,:,1] = xyz[:,:,1] * distance
     xyz[:,:,2] = xyz[:,:,2] * distance
     
-    #pointcloud = xyzrgb_array_to_pointcloud2(sphere, imageRGB, stamp = top_image.header.stamp, frame_id="map")
-    #pointcloud = xyzrgb_array_to_pointcloud2(sphere, btm_panorama.astype(np.float32)/255.0, stamp = top_image.header.stamp, frame_id="map")
-    pointcloud = xyzrgb_array_to_pointcloud2(xyz, btm_panorama.astype(np.float32)/255.0, stamp = top_image.header.stamp, frame_id="map")
+    pointcloud = xyzrgb_array_to_pointcloud2(xyz[112:528,:,:], btm_panorama[112:528,:,:].astype(np.float32)/255.0, stamp = top_image.header.stamp, frame_id="map")
     
     pubPCL.publish(pointcloud)
 
@@ -157,7 +154,7 @@ if __name__ == '__main__':
     top_image_sub = message_filters.Subscriber('/top/image_rect', Image)
     btm_image_sub = message_filters.Subscriber('/bottom/image_rect', Image)
 
-    ts = message_filters.ApproximateTimeSynchronizer([top_image_sub, btm_image_sub], 10, 0.005)
+    ts = message_filters.ApproximateTimeSynchronizer([top_image_sub, btm_image_sub], 10, 0.05)
     ts.registerCallback(callback)
     
     pub = rospy.Publisher('image_depth', Image, queue_size=10)
@@ -167,21 +164,28 @@ if __name__ == '__main__':
         sinvnfs[:,u] = np.sin(np.arange(640, dtype=np.float32) * np.pi / 640)
 
     sphere = np.zeros((640,1280,3), dtype=np.float32)
-    R = 1
     x = np.arange(1280, dtype=np.float32)
     lam = (x - 640) * (2*np.pi) / 1280
     for y in range(640):
         phi = (320 - y) * np.pi / 640
-        xs = R * np.cos(phi)*np.sin(lam)
-        ys = R * np.cos(phi)*np.cos(lam)
-        zs = R * np.sin(phi) * np.ones(1280)
+        xs = np.cos(phi)*np.sin(lam)
+        ys = np.cos(phi)*np.cos(lam)
+        zs = np.sin(phi) * np.ones(1280)
         sphere[y,:,0] = xs
         sphere[y,:,1] = ys
         sphere[y,:,2] = zs
 
-    #imageRGB = np.zeros((640,1280,3), dtype=np.float32)
-    imageRGB = np.random.rand(640,1280,3)
-    #imageRGB[:,:,1] = 1.0
+    # sphere = np.zeros((640,1280,3), dtype=np.float32)
+    # x = np.arange(1280, dtype=np.float32)
+    # th = (x - 640) * (2*np.pi) / 1280
+    # for y in range(640):
+    #     phi = (320 - y) * np.pi / 640
+    #     xs = np.cos(phi) * np.sin(th)
+    #     ys = np.sin(phi) * np.ones(1280)
+    #     zs = np.cos(phi) * np.cos(th)
+    #     sphere[y,:,0] = xs
+    #     sphere[y,:,1] = ys
+    #     sphere[y,:,2] = zs
 
     pubPCL = rospy.Publisher('pointcloud', PointCloud2, queue_size=10)
 
