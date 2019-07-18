@@ -35,3 +35,6 @@ on how to use this camera.
 
     jupyter notebook ~/Desktop/RicohTheta_ws/src/ricoh_camera/notebooks/index.ipynb
    
+Some rosbags with data for the examples can be downloaded from:
+
+[https://mega.nz/#F!nrIkGaAK!dQLdb_jZpjAgvUA0Pd2X_Q](https://mega.nz/#F!nrIkGaAK!dQLdb_jZpjAgvUA0Pd2X_Q)
