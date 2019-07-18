@@ -46,15 +46,37 @@ def callback(top_image, btm_image):
     d1 = np.empty_like(subimgL, dtype=np.float32)
     d2 = np.empty_like(subimgR, dtype=np.float32)
 
-    params = Elas_parameters()
-    params.postprocess_only_left = False
-    elas = Elas(params)
+    param = Elas_parameters()
+    param.disp_min = 0
+    param.disp_max = 112
+    param.support_threshold = 0.85
+    param.support_texture       = 10
+    param.candidate_stepsize    = 5
+    param.incon_window_size     = 5
+    param.incon_threshold       = 5
+    param.incon_min_support     = 5
+    param.add_corners           = False
+    param.grid_size             = 10
+    param.beta                  = 0.02
+    param.gamma                 = 3
+    param.sigma                 = 1
+    param.sradius               = 2
+    param.match_texture         = 1
+    param.lr_threshold          = 2
+    param.speckle_sim_threshold = 2
+    param.speckle_size          = 200
+    param.ipol_gap_width        = 3
+    param.filter_median         = False
+    param.filter_adaptive_mean  = False
+    param.postprocess_only_left = True
+    param.subsampling           = False
+    elas = Elas(param)
 
     elas.process_stereo(subimgL, subimgR, d1, d2)
 
     output = rotate_ccw_90(d1)
     #output = (output / np.amax(output)*255)
-    image_message = bridge.cv2_to_imgmsg(output, encoding="passthrough")
+    image_message = bridge.cv2_to_imgmsg(output/112.0, encoding="passthrough")
 
     #output = rotate_ccw_90(cv2.addWeighted(subimgL,0.5,subimgR,0.5,0))
     #image_message = bridge.cv2_to_imgmsg(output, encoding="mono8")
