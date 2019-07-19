@@ -1,0 +1,11 @@
+<launch>
+
+  <node pkg="ricoh_camera" type="depth_elas.py" name="depth_elas" output="screen" />
+  <node name="sgbm_depth_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="image_depth" />
+  </node>
+  <node name="sgbm_disparity_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="image_disparity" />
+  </node>
+  <node name="rviz" pkg="rviz" type="rviz" respawn="false" output="screen" />
+</launch>

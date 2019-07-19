@@ -75,8 +75,10 @@ def callback(top_image, btm_image):
     elas.process_stereo(subimgL, subimgR, d1, d2)
 
     output = rotate_ccw_90(d1)
+    output = output * (output>0)
     #output = (output / np.amax(output)*255)
-    image_message = bridge.cv2_to_imgmsg(output/112.0, encoding="passthrough")
+    #image_message = bridge.cv2_to_imgmsg(output/112.0, encoding="passthrough")
+    image_message = bridge.cv2_to_imgmsg((output/112.0*255).astype(np.uint8), encoding="mono8")
 
     #output = rotate_ccw_90(cv2.addWeighted(subimgL,0.5,subimgR,0.5,0))
     #image_message = bridge.cv2_to_imgmsg(output, encoding="mono8")
