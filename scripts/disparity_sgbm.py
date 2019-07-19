@@ -22,6 +22,8 @@ def rotate_ccw_90(img):
     return img_f
 
 def callback(top_image, btm_image):
+    global image_number
+    global image_path
 
     try:
       top_panorama = bridge.imgmsg_to_cv2(top_image, "bgr8")
@@ -43,11 +45,11 @@ def callback(top_image, btm_image):
     subimgR = imgR
 
     window_size = 3
-    min_disp = 16
+    min_disp = 0
     num_disp = 112-min_disp
     stereo = cv2.StereoSGBM_create(minDisparity = min_disp,
         numDisparities = num_disp,
-        blockSize = 5,
+        blockSize = 7,
         P1 = 8*3*window_size**2,
         P2 = 32*3*window_size**2,
         disp12MaxDiff = 1,
@@ -55,11 +57,19 @@ def callback(top_image, btm_image):
         speckleWindowSize = 100,
         speckleRange = 32
     )
-    disp = stereo.compute(subimgL, subimgR).astype(np.float32) #/ 16.0
-    output = rotate_ccw_90((disp-min_disp)/num_disp)
-    output = np.roll(output, -dx, axis=1)
+    disp = stereo.compute(subimgL, subimgR).astype(np.float32) / 16.0
 
-    image_message = bridge.cv2_to_imgmsg(output, encoding="passthrough")
+    disp = np.roll(rotate_ccw_90(disp), -dx, axis=1)
+    #np.save(image_path + "disp%04d" % image_number, disp)
+    #image_number += 1
+
+    #output = rotate_ccw_90((disp-min_disp)/num_disp)
+    #output = np.roll(output, -dx, axis=1)
+    output = disp * (disp>0)
+    output = ((output-min_disp)/num_disp)
+    
+    image_message = bridge.cv2_to_imgmsg((output*255).astype(np.uint8), encoding="mono8")
+    #image_message = bridge.cv2_to_imgmsg(output, encoding="passthrough")
 
     #output = rotate_ccw_90(cv2.addWeighted(subimgL,0.5,subimgR,0.5,0))
     #image_message = bridge.cv2_to_imgmsg(output, encoding="bgr8")
@@ -69,6 +79,10 @@ def callback(top_image, btm_image):
     return
 
 if __name__ == '__main__':
+
+    image_number = 0
+    image_path = "/home/ricoh/Desktop/images/"
+
     rospy.init_node('disparity_sgbm', anonymous=True)
     bridge = CvBridge()
     

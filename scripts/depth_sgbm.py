@@ -91,6 +91,8 @@ def rotate_ccw_90(img):
 def callback(top_image, btm_image):
 
     global sinvnfs
+    global image_number
+    global image_path
 
     try:
       top_panorama = bridge.imgmsg_to_cv2(top_image, "rgb8")
@@ -120,21 +122,31 @@ def callback(top_image, btm_image):
         speckleWindowSize = 100,
         speckleRange = 32
     )
-    disp = stereo.compute(imgL, imgR).astype(np.float32) #/ 16.0
+    disp = stereo.compute(imgL, imgR).astype(np.float32) / 16.0
     #output = rotate_ccw_90((disp-min_disp)/num_disp)
-    output = np.roll(rotate_ccw_90(disp), -dx, axis=1)
+    disp = np.roll(rotate_ccw_90(disp), -dx, axis=1)
 
     #output = rotate_cw_90((disp-min_disp)/num_disp)
+    valid = (disp>0)
+
+    output = disp * valid
+    output = ((output-min_disp)/num_disp)
     
-    distance = 0.35 * sinvnfs / np.sin(output*np.pi/640.0)
-    distance = np.clip(distance, 0, 20)
-
-    norm_dist = distance * 255 / 20
-
-    image_message = bridge.cv2_to_imgmsg(norm_dist, encoding="passthrough")
-
+    image_message = bridge.cv2_to_imgmsg((output*255).astype(np.uint8), encoding="mono8")
     image_message.header.stamp = top_image.header.stamp
-    pub.publish(image_message)
+    pub_disp.publish(image_message)
+    
+    distance = 0.35 * sinvnfs / np.sin(disp*np.pi/640.0)
+    distance = np.clip(distance, 0, 10)
+    distance = distance * valid + 0 * (1 - valid)
+
+    #np.save(image_path + "depth%04d" % image_number, distance)
+    #image_number += 1
+
+    norm_dist = (distance * 255 / 10).astype(np.uint8)
+    image_message = bridge.cv2_to_imgmsg(norm_dist, encoding="mono8")
+    image_message.header.stamp = top_image.header.stamp
+    pub_depth.publish(image_message)
 
     xyz = np.array(sphere, copy=True)
     xyz[:,:,0] = xyz[:,:,0] * distance
@@ -148,6 +160,9 @@ def callback(top_image, btm_image):
     return
 
 if __name__ == '__main__':
+    image_number = 0
+    image_path = "/home/ricoh/Desktop/images/"
+
     rospy.init_node('depth_sgbm', anonymous=True)
     bridge = CvBridge()
     
@@ -157,7 +172,8 @@ if __name__ == '__main__':
     ts = message_filters.ApproximateTimeSynchronizer([top_image_sub, btm_image_sub], 10, 0.05)
     ts.registerCallback(callback)
     
-    pub = rospy.Publisher('image_depth', Image, queue_size=10)
+    pub_disp = rospy.Publisher('image_disparity', Image, queue_size=10)
+    pub_depth = rospy.Publisher('image_depth', Image, queue_size=10)
 
     sinvnfs = np.zeros((640,1280), dtype=np.float32)
     for u in range(1280):
