@@ -1,0 +1,12 @@
+<launch>
+
+  <node name="save_rgb" pkg="image_view" type="image_saver" respawn="false" output="screen">
+    <remap from="image" to="top/image_rect" />
+    <param name="filename_format" value="rgb%04d.png" />
+  </node>
+  <node name="save_depth" pkg="image_view" type="image_saver" respawn="false" output="screen">
+    <remap from="image" to="image_depth" />
+    <param name="filename_format" value="depth%04d.png" />
+    <param name="encoding" value="16UC1" />
+  </node>
+</launch>

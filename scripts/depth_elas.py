@@ -127,8 +127,11 @@ def callback(top_image, btm_image):
     #np.save(image_path + "depth%04d" % image_number, distance)
     #image_number += 1
 
-    norm_dist = (distance * 255 / 10).astype(np.uint8)
-    image_message = bridge.cv2_to_imgmsg(norm_dist, encoding="mono8")
+    #norm_dist = (distance * 255 / 10).astype(np.uint8)
+    #image_message = bridge.cv2_to_imgmsg(norm_dist, encoding="mono8")
+    dist_mm = (distance * 1000).astype(np.uint16)
+    image_message = bridge.cv2_to_imgmsg(dist_mm, encoding="mono16")
+    
     image_message.header.stamp = top_image.header.stamp
     pub_depth.publish(image_message)
 
