@@ -13,11 +13,12 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  image_transport
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-
+find_package(OpenCV REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -107,7 +108,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES ricoh_camera
-  CATKIN_DEPENDS cv_bridge roscpp rospy sensor_msgs std_msgs
+  CATKIN_DEPENDS cv_bridge roscpp rospy sensor_msgs std_msgs image_transport
 #  DEPENDS system_lib
 )
 
@@ -120,6 +121,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -136,6 +138,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_hello src/hello.cpp)
+add_executable(${PROJECT_NAME}_opencv_example src/opencv_example.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -152,6 +155,7 @@ add_executable(${PROJECT_NAME}_hello src/hello.cpp)
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(${PROJECT_NAME}_hello ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_opencv_example ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 #############
 ## Install ##
