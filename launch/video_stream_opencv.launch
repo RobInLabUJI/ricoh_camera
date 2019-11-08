@@ -1,0 +1,21 @@
+<launch>
+   <!-- launch video stream -->
+   <include file="$(find video_stream_opencv)/launch/camera.launch" >
+      <!-- node name and ros graph name -->
+      <arg name="camera_name" value="RicohThetaS" />
+      <!-- means video device 0, /dev/video0 -->
+      <arg name="video_stream_provider" value="0" />
+      <!-- set camera fps to (if the device allows) -->
+      <arg name="set_camera_fps" value="15"/>
+      <!-- set buffer queue size of frame capturing to -->
+      <arg name="buffer_queue_size" value="1" />
+      <!-- throttling the publishing of frames to -->
+      <arg name="fps" value="15" />
+      <!-- force a width and height, 0 means no forcing -->
+      <arg name="width" value="1280"/>
+      <arg name="height" value="720"/>
+   </include>
+   <node name="image_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+      <remap from="image" to="/RicohThetaS/image_raw" />
+   </node>
+</launch>
