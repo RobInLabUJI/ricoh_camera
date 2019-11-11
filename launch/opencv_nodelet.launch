@@ -13,7 +13,17 @@
     <param name="rate"         value="$(arg rate)"/>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="image_view" args="load image_view/image nodelet_manager">
+  <node pkg="nodelet" type="nodelet" name="image_view1" args="load image_view/image nodelet_manager">
     <remap from="image" to="cv_camera/image_raw"/>
   </node>
+
+  <node pkg="ricoh_camera" type="ricoh_camera_opencv_example" name="opencv_example">
+    <remap from="image_raw" to="cv_camera/image_raw" />
+    <remap from="image_processed" to="cv_camera/image_processed" />
+  </node>
+
+  <node pkg="image_view" type="image_view" name="image_view2">
+    <remap from="image" to="cv_camera/image_processed"/>
+  </node>
+
 </launch>
