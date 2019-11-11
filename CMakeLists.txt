@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   image_transport
+  nodelet
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,8 +108,8 @@ find_package(OpenCV REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-#  LIBRARIES ricoh_camera
-  CATKIN_DEPENDS cv_bridge roscpp rospy sensor_msgs std_msgs image_transport
+  LIBRARIES ricoh_camera
+  CATKIN_DEPENDS cv_bridge roscpp rospy sensor_msgs std_msgs image_transport nodelet
 #  DEPENDS system_lib
 )
 
@@ -125,9 +126,12 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/ricoh_camera.cpp
-# )
+add_library(ricoh_camera src/opencv_nodelet.cpp
+)
+target_link_libraries(ricoh_camera ${catkin_LIBRARIES})
+if(catkin_EXPORTED_LIBRARIES)
+  add_dependencies(ricoh_camera ${catkin_EXPORTED_LIBRARIES})
+endif()
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
