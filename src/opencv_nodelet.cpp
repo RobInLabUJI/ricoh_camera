@@ -42,10 +42,15 @@ public:
 
   void imageCb(const sensor_msgs::ImageConstPtr& msg)
   {
-    cv_bridge::CvImagePtr cv_ptr;
+    //cv_bridge::CvImagePtr cv_ptr;
     try
     {
-      cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+      //cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+      const cv::Mat image = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::BGR8)->image;   
+      if (image.rows > 60 && image.cols > 60)
+        cv::circle(image, cv::Point(50, 50), 10, CV_RGB(255,0,0));
+	  sensor_msgs::ImagePtr new_msg = cv_bridge::CvImage(msg->header, msg->encoding, image).toImageMsg();
+  	  image_pub_.publish(new_msg);
     }
     catch (cv_bridge::Exception& e)
     {
@@ -54,11 +59,11 @@ public:
     }
 
     // Draw an example circle on the video stream
-    if (cv_ptr->image.rows > 60 && cv_ptr->image.cols > 60)
-      cv::circle(cv_ptr->image, cv::Point(50, 50), 10, CV_RGB(255,0,0));
+    //if (cv_ptr->image.rows > 60 && cv_ptr->image.cols > 60)
+    //  cv::circle(cv_ptr->image, cv::Point(50, 50), 10, CV_RGB(255,0,0));
 
     // Output modified video stream
-    image_pub_.publish(cv_ptr->toImageMsg());
+    //image_pub_.publish(cv_ptr->toImageMsg());
   }
 };
 
