@@ -126,7 +126,7 @@ include_directories(
 )
 
 ## Declare a C++ library
-add_library(ricoh_camera src/opencv_nodelet.cpp src/splitter_nodelet.cpp
+add_library(ricoh_camera src/opencv_nodelet.cpp src/splitter_nodelet.cpp src/eqrect_nodelet.cpp
 )
 target_link_libraries(ricoh_camera ${catkin_LIBRARIES})
 if(catkin_EXPORTED_LIBRARIES)

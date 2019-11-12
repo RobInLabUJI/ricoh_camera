@@ -6,7 +6,12 @@
   </class>
   <class name="ricoh_camera/Splitter" type="ricoh_camera::Splitter" base_class_type="nodelet::Nodelet">
     <description>
-      This is a demo nodelet.
+      This is the Splitter nodelet.
+    </description>
+  </class>
+  <class name="ricoh_camera/EqRect" type="ricoh_camera::EqRect" base_class_type="nodelet::Nodelet">
+    <description>
+      This is the EqRect nodelet.
     </description>
   </class>
 </library>
