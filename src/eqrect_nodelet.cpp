@@ -62,6 +62,17 @@ public:
 
   void create_spherical_proj(cv::Mat& K, double& xi, cv::Mat& D, double plus_theta, double zi, double rho_limit, cv::Mat& map1, cv::Mat& map2, cv::Mat& mask)
   {
+	  cv::Mat rvec = cv::Mat::zeros(3, 1, CV_64F);
+	  cv::Mat tvec = cv::Mat::zeros(3, 1, CV_64F);
+  	  map1 = cv::Mat::zeros(640, 1280, CV_32F);
+	  map2 = cv::Mat::zeros(640, 1280, CV_32F);
+	  int height = 640;
+	  int width = 1280;
+	  double step_theta = 2 * CV_PI / width;
+	  double step_phi = CV_PI / height;
+	  for (int i=0; i<height; i++) {
+		  
+	  }
   }
   
   void imageCb(const sensor_msgs::ImageConstPtr& msg)
