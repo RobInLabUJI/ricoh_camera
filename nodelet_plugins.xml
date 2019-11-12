@@ -1,7 +1,12 @@
 <library path="lib/libricoh_camera">
   <class name="ricoh_camera/ImageConverter" type="ricoh_camera::ImageConverter" base_class_type="nodelet::Nodelet">
     <description>
-      This is my nodelet.
+      This is a demo nodelet.
+    </description>
+  </class>
+  <class name="ricoh_camera/Splitter" type="ricoh_camera::Splitter" base_class_type="nodelet::Nodelet">
+    <description>
+      This is a demo nodelet.
     </description>
   </class>
 </library>
