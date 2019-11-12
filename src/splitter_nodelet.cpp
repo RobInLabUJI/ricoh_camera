@@ -42,6 +42,9 @@ public:
 		const cv::Mat img_frnt = image( cv::Rect(0, 0, 640, 640) );
 		const cv::Mat img_back = image( cv::Rect(640, 0, 640, 640) );
 		
+		cv::rotate(img_frnt, img_frnt, cv::ROTATE_90_CLOCKWISE);
+		cv::rotate(img_back, img_back, cv::ROTATE_90_COUNTERCLOCKWISE);
+		
 		sensor_msgs::ImagePtr frnt_msg = cv_bridge::CvImage(msg->header, msg->encoding, img_frnt).toImageMsg();
 		sensor_msgs::ImagePtr back_msg = cv_bridge::CvImage(msg->header, msg->encoding, img_back).toImageMsg();
 		image_frnt_.publish(frnt_msg);
