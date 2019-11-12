@@ -62,7 +62,8 @@ public:
     not_intersect = 1 - intersect;
   }
 
-  void create_spherical_proj(cv::Mat& K, double& xi, cv::Mat& D, double plus_theta, double zi, double rho_limit, cv::Mat& map1, cv::Mat& map2, cv::Mat& mask)
+  void create_spherical_proj(const cv::Mat& K, double xi, const cv::Mat& D, double plus_theta, double zi, 
+							 double rho_limit, cv::Mat& map1, cv::Mat& map2, cv::Mat& mask)
   {
 	  cv::Mat rvec = cv::Mat::zeros(3, 1, CV_64F);
 	  cv::Mat tvec = cv::Mat::zeros(3, 1, CV_64F);
@@ -93,7 +94,7 @@ public:
 			d.at<double>(2,0) += zi;
 			if (rho < rho_limit) {
 				
-				//cv::omnidir::projectPoints(d, m, rvec, tvec, K, xi, D);
+				cv::omnidir::projectPoints(d, m, rvec, tvec, K, xi, D);
 				
 				map1.at<float>(i,j) = (float)m.at<cv::Vec3f>(0,0)[0];
 				map2.at<float>(i,j) = (float)m.at<cv::Vec3f>(0,0)[1];
