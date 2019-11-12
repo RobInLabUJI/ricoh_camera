@@ -10,6 +10,7 @@
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/ccalib/omnidir.hpp>
 
 namespace ricoh_camera {
 
@@ -53,10 +54,11 @@ public:
     double rho_limit = 95.0 * CV_PI / 180.0;
     double baseline = 0.013;
     
+    
     create_spherical_proj(K_f, xi_f, D_f, 0.0, 0.0, rho_limit, map1_f, map2_f, f_mask);
     create_spherical_proj(K_b, xi_b, D_b, CV_PI, -baseline, rho_limit, map1_b, map2_b, b_mask);
     
-    intersect = f_mask * b_mask;
+    intersect = f_mask & b_mask;
     not_intersect = 1 - intersect;
   }
 
@@ -64,15 +66,45 @@ public:
   {
 	  cv::Mat rvec = cv::Mat::zeros(3, 1, CV_64F);
 	  cv::Mat tvec = cv::Mat::zeros(3, 1, CV_64F);
-  	  map1 = cv::Mat::zeros(640, 1280, CV_32F);
-	  map2 = cv::Mat::zeros(640, 1280, CV_32F);
+  	  
 	  int height = 640;
 	  int width = 1280;
+	  
+  	  map1 = cv::Mat::zeros(height, width, CV_32F);
+	  map2 = cv::Mat::zeros(height, width, CV_32F);
+	  
 	  double step_theta = 2 * CV_PI / width;
 	  double step_phi = CV_PI / height;
-	  for (int i=0; i<height; i++) {
-		  
-	  }
+	  
+	  cv::Mat d = cv::Mat::zeros(1, 1, CV_64FC3);
+	  cv::Mat m = cv::Mat::zeros(1, 1, CV_64FC3);
+	  
+	  double theta, phi, rho;
+	  for (int i=0; i<height; i++) 
+	    for (int j=0; j<width; j++)
+		{
+			
+			theta = j * step_theta - CV_PI + plus_theta;
+			phi = i * step_phi - CV_PI/2;
+			d.at<cv::Vec3f>(0,0)[0] = sin(theta) * cos(phi);
+			d.at<cv::Vec3f>(0,0)[1] = sin(phi);
+			d.at<cv::Vec3f>(0,0)[2] = cos(theta) * cos(phi); 
+			rho = acos(d.at<cv::Vec3f>(0,0)[2]);
+			d.at<double>(2,0) += zi;
+			if (rho < rho_limit) {
+				
+				//cv::omnidir::projectPoints(d, m, rvec, tvec, K, xi, D);
+				
+				map1.at<float>(i,j) = (float)m.at<cv::Vec3f>(0,0)[0];
+				map2.at<float>(i,j) = (float)m.at<cv::Vec3f>(0,0)[1];
+				
+			} else {
+				map1.at<float>(i,j) = (float) -1;
+				map2.at<float>(i,j) = (float) -1;
+			}
+			
+		}
+		mask = (map1 != -1);
   }
   
   void imageCb(const sensor_msgs::ImageConstPtr& msg)
@@ -82,12 +114,14 @@ public:
 		const cv::Mat image = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::BGR8)->image;   
 		const cv::Mat img_frnt = image( cv::Rect(0, 0, 640, 640) );
 		const cv::Mat img_back = image( cv::Rect(640, 0, 640, 640) );
+		cv::Mat img_rect;
 		
 		cv::rotate(img_frnt, img_frnt, cv::ROTATE_90_CLOCKWISE);
 		cv::rotate(img_back, img_back, cv::ROTATE_90_COUNTERCLOCKWISE);
 		
+		//cv::remap(img_frnt, img_rect, map1_f, map2_f, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+		img_rect = img_frnt.clone();
 		
-		const cv::Mat img_rect = img_frnt;
 		sensor_msgs::ImagePtr rect_msg = cv_bridge::CvImage(msg->header, msg->encoding, img_rect).toImageMsg();
 		image_rect_.publish(rect_msg);
     }

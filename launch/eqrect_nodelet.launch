@@ -14,9 +14,8 @@
   </node>
 
   <node pkg="nodelet" type="nodelet" name="eqrect" args="load ricoh_camera/EqRect nodelet_manager">
-    <remap from="image_raw" to="cv_camera/image_raw" />
-    <remap from="front/image_raw" to="cv_camera/front/image_raw" />
-    <remap from="back/image_raw" to="cv_camera/back/image_raw" />
+    <remap from="image_raw"  to="cv_camera/image_raw" />
+    <remap from="image_rect" to="cv_camera/image_rect" />
   </node>
 
 </launch>
