@@ -18,6 +18,7 @@
   <node pkg="nodelet" type="nodelet" name="top_eqrect" args="load ricoh_camera/EqRect nodelet_manager_top">
     <remap from="image_raw"  to="top/image_raw" />
     <remap from="image_rect" to="top/image_rect" />
+    <param name="invert" value="false" />
   </node>
 
   <node pkg="nodelet" type="nodelet" name="nodelet_manager_bottom"  args="manager"/>
@@ -33,6 +34,7 @@
   <node pkg="nodelet" type="nodelet" name="bottom_eqrect" args="load ricoh_camera/EqRect nodelet_manager_bottom">
     <remap from="image_raw"  to="bottom/image_raw" />
     <remap from="image_rect" to="bottom/image_rect" />
+    <param name="invert" value="true" />
   </node>
 
 </launch>

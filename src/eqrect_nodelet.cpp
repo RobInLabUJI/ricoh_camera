@@ -31,7 +31,9 @@ class EqRect : public nodelet::Nodelet
   cv::Mat f_mask;
   cv::Mat b_mask;
   cv::Mat intersect;
-  cv::Mat not_intersect;  
+  cv::Mat not_intersect; 
+  
+  bool invert;
   
 public:
 
@@ -43,6 +45,8 @@ public:
 
     image_sub_ = it_->subscribe("image_raw", 1, &EqRect::imageCb, this);
     image_rect_ = it_->advertise("image_rect", 1);
+    
+    private_nh.getParam("invert", invert);
     
     float intrinsics_f[5] = {3.075376076482602, 779.3889270920181, 774.414730567985, 320.3469010920599, 319.52706568389664};
     float xi_f = intrinsics_f[0];
@@ -60,20 +64,8 @@ public:
     create_spherical_proj(K_f, xi_f, D_f, 0.0, 0.0, rho_limit, map1_f, map2_f, f_mask);
     create_spherical_proj(K_b, xi_b, D_b, CV_PI, -baseline, rho_limit, map1_b, map2_b, b_mask);
     
-	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map1_f.jpg", map1_f);
-	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map2_f.jpg", map2_f);
-
-	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map1_b.jpg", map1_b);
-	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map2_b.jpg", map2_b);
-
-	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/mask_f.jpg", f_mask);
-	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/mask_b.jpg", b_mask);
-
     intersect = f_mask & b_mask;
-    not_intersect = ~intersect;
-
-	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/intersect.jpg", intersect);
-	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/not_intersect.jpg", not_intersect);
+    not_intersect = ~intersect;    
   }
 
   void create_spherical_proj(const cv::Mat& K, float xi, const cv::Mat& D, float plus_theta, float zi, 
@@ -126,9 +118,13 @@ public:
 		const cv::Mat img_back = image( cv::Rect(640, 0, 640, 640) );
 		cv::Mat img_rect, img_rect_frnt, img_rect_back, s, hs, r1, r2;
 		
-		cv::rotate(img_frnt, img_frnt, cv::ROTATE_90_CLOCKWISE);
-		cv::rotate(img_back, img_back, cv::ROTATE_90_COUNTERCLOCKWISE);
-		
+		if (invert) {
+		  cv::rotate(img_frnt, img_frnt, cv::ROTATE_90_COUNTERCLOCKWISE);
+		  cv::rotate(img_back, img_back, cv::ROTATE_90_CLOCKWISE);
+		} else {
+		  cv::rotate(img_frnt, img_frnt, cv::ROTATE_90_CLOCKWISE);
+		  cv::rotate(img_back, img_back, cv::ROTATE_90_COUNTERCLOCKWISE);
+		}
 		cv::remap(img_frnt, img_rect_frnt, map1_f, map2_f, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 		cv::remap(img_back, img_rect_back, map1_b, map2_b, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 		
@@ -147,7 +143,6 @@ public:
       ROS_ERROR("cv_bridge exception: %s", e.what());
       return;
     }
-
   }
 };
 
