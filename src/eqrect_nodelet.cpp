@@ -124,13 +124,20 @@ public:
 		const cv::Mat image = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::BGR8)->image;   
 		const cv::Mat img_frnt = image( cv::Rect(0, 0, 640, 640) );
 		const cv::Mat img_back = image( cv::Rect(640, 0, 640, 640) );
-		cv::Mat img_rect;
+		cv::Mat img_rect, img_rect_frnt, img_rect_back, s, hs, r1, r2;
 		
 		cv::rotate(img_frnt, img_frnt, cv::ROTATE_90_CLOCKWISE);
 		cv::rotate(img_back, img_back, cv::ROTATE_90_COUNTERCLOCKWISE);
 		
-		cv::remap(img_frnt, img_rect, map1_f, map2_f, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
-		//img_rect = img_frnt.clone();
+		cv::remap(img_frnt, img_rect_frnt, map1_f, map2_f, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+		cv::remap(img_back, img_rect_back, map1_b, map2_b, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+		
+		s = img_rect_frnt + img_rect_back;
+		hs = img_rect_frnt/2 + img_rect_back/2;
+		
+		cv::bitwise_and(hs, hs, r2, intersect);
+		cv::bitwise_and(s, s, r1, not_intersect);
+		img_rect = r1 + r2;
 		
 		sensor_msgs::ImagePtr rect_msg = cv_bridge::CvImage(msg->header, msg->encoding, img_rect).toImageMsg();
 		image_rect_.publish(rect_msg);
