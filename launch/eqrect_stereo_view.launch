@@ -1,0 +1,19 @@
+<launch>
+
+  <node name="top_image_raw_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/top/image_raw" />
+  </node>
+
+  <node name="top_image_rect_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/top/image_rect" />
+  </node>
+
+  <node name="bottom_image_raw_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/bottom/image_raw" />
+  </node>
+
+  <node name="bottom_image_rect_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/bottom/image_rect" />
+  </node>
+
+</launch>

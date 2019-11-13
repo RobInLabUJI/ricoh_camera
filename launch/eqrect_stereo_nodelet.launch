@@ -1,0 +1,38 @@
+<launch>
+  <arg name="device_id_top"    default="0" />
+  <arg name="device_id_bottom" default="1" />
+  <arg name="image_width"  default="1280"/>
+  <arg name="image_height" default="720"/>
+  <arg name="rate"         default="15"/>
+
+  <node pkg="nodelet" type="nodelet" name="nodelet_manager_top"  args="manager"/>
+
+  <node pkg="nodelet" type="nodelet" name="top_camera" args="load cv_camera/CvCameraNodelet nodelet_manager_top">
+    <param name="device_id"    value="$(arg device_id_top)"/>
+    <param name="image_width"  value="$(arg image_width)"/>
+    <param name="image_height" value="$(arg image_height)"/>
+    <param name="rate"         value="$(arg rate)"/>
+    <remap from="top_camera/image_raw"  to="top/image_raw" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="top_eqrect" args="load ricoh_camera/EqRect nodelet_manager_top">
+    <remap from="image_raw"  to="top/image_raw" />
+    <remap from="image_rect" to="top/image_rect" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="nodelet_manager_bottom"  args="manager"/>
+
+  <node pkg="nodelet" type="nodelet" name="bottom_camera" args="load cv_camera/CvCameraNodelet nodelet_manager_bottom">
+    <param name="device_id"    value="$(arg device_id_bottom)"/>
+    <param name="image_width"  value="$(arg image_width)"/>
+    <param name="image_height" value="$(arg image_height)"/>
+    <param name="rate"         value="$(arg rate)"/>
+    <remap from="bottom_camera/image_raw"  to="bottom/image_raw" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="bottom_eqrect" args="load ricoh_camera/EqRect nodelet_manager_bottom">
+    <remap from="image_raw"  to="bottom/image_raw" />
+    <remap from="image_rect" to="bottom/image_rect" />
+  </node>
+
+</launch>
