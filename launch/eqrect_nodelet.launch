@@ -13,7 +13,7 @@
     <param name="rate"         value="$(arg rate)"/>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="eqrect" args="load ricoh_camera/EqRect nodelet_manager">
+  <node pkg="nodelet" type="nodelet" name="eqrect" args="load ricoh_camera/EqRect nodelet_manager" output="screen">
     <remap from="image_raw"  to="cv_camera/image_raw" />
     <remap from="image_rect" to="cv_camera/image_rect" />
   </node>

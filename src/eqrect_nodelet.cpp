@@ -5,12 +5,15 @@
 
 #include <ros/ros.h>
 #include <nodelet/nodelet.h>
+#include <ros/console.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/ccalib/omnidir.hpp>
+
+#include <fstream>
 
 namespace ricoh_camera {
 
@@ -57,21 +60,23 @@ public:
     create_spherical_proj(K_f, xi_f, D_f, 0.0, 0.0, rho_limit, map1_f, map2_f, f_mask);
     create_spherical_proj(K_b, xi_b, D_b, CV_PI, -baseline, rho_limit, map1_b, map2_b, b_mask);
     
-	cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map1_f.jpg", map1_f);
-	cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map2_f.jpg", map2_f);
-	cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map1_b.jpg", map1_b);
-	cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map2_b.jpg", map2_b);
+	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map1_f.jpg", map1_f);
+	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map2_f.jpg", map2_f);
+
+	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map1_b.jpg", map1_b);
+	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/map2_b.jpg", map2_b);
+
+	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/mask_f.jpg", f_mask);
+	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/mask_b.jpg", b_mask);
 
     intersect = f_mask & b_mask;
     not_intersect = ~intersect;
 
-	cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/mask_f.jpg", f_mask);
-	cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/mask_b.jpg", b_mask);
-	cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/intersect.jpg", intersect);
-	cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/not_intersect.jpg", not_intersect);
+	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/intersect.jpg", intersect);
+	//cv::imwrite("/home/ecervera/Desktop/RicohTheta_ws/not_intersect.jpg", not_intersect);
   }
 
-  void create_spherical_proj(const cv::Mat& K, double xi, const cv::Mat& D, float plus_theta, float zi, 
+  void create_spherical_proj(const cv::Mat& K, float xi, const cv::Mat& D, float plus_theta, float zi, 
 							 float rho_limit, cv::Mat& map1, cv::Mat& map2, cv::Mat& mask)
   {
 	  cv::Mat rvec = cv::Mat::zeros(3, 1, CV_32F);
@@ -87,7 +92,7 @@ public:
 	  float step_phi = CV_PI / height;
 	  
 	  cv::Mat d = cv::Mat::zeros(1, 1, CV_64FC3);
-	  cv::Mat m = cv::Mat::zeros(1, 1, CV_64FC3);
+	  cv::Mat m;
 	  
 	  float theta, phi, rho;
 	  for (int i=0; i<height; i++) 
@@ -95,15 +100,15 @@ public:
 		{
 			theta = j * step_theta - CV_PI + plus_theta;
 			phi = i * step_phi - CV_PI/2;
-			d.at<cv::Vec3f>(0,0)[0] = (float) (sin(theta) * cos(phi));
-			d.at<cv::Vec3f>(0,0)[1] = (float) sin(phi);
-			d.at<cv::Vec3f>(0,0)[2] = (float) (cos(theta) * cos(phi)); 
-			rho = acos(d.at<cv::Vec3f>(0,0)[2]);
-			d.at<float>(2,0) += zi;
+			d.at<cv::Vec3d>(0,0)[0] = sin(theta) * cos(phi);
+			d.at<cv::Vec3d>(0,0)[1] = sin(phi);
+			d.at<cv::Vec3d>(0,0)[2] = cos(theta) * cos(phi); 
+			rho = acos(d.at<cv::Vec3d>(0,0)[2]);
+			d.at<cv::Vec3d>(0,0)[2] += zi;
 			if (rho < rho_limit) {
 				cv::omnidir::projectPoints(d, m, rvec, tvec, K, xi, D);
-				map1.at<float>(i,j) = m.at<cv::Vec3f>(0,0)[0];
-				map2.at<float>(i,j) = m.at<cv::Vec3f>(0,0)[1];
+				map1.at<float>(i,j) = (float) m.at<cv::Vec3d>(0,0)[0];
+				map2.at<float>(i,j) = (float) m.at<cv::Vec3d>(0,0)[1];
 			} else {
 				map1.at<float>(i,j) = (float) -1;
 				map2.at<float>(i,j) = (float) -1;
