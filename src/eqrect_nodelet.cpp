@@ -19,6 +19,7 @@
 #include "opencv2/cudaimgproc.hpp"
 
 #include <fstream>
+#include <ctime>
 
 namespace ricoh_camera {
 
@@ -141,6 +142,8 @@ public:
     {
 		cv::Mat image_host = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::BGR8)->image;   
 
+        clock_t tstart, tend; 
+        tstart = clock();
 
         cv::cuda::GpuMat image(image_host);
 
@@ -180,10 +183,11 @@ public:
 
         img_rect.download(img_rect_host);
 
+        tend = clock(); 
+        std::cout << "It took "<< ((double)(tend-tstart))/CLOCKS_PER_SEC <<" second(s)."<< std::endl;
+
 		sensor_msgs::ImagePtr rect_msg = cv_bridge::CvImage(msg->header, msg->encoding, img_rect_host).toImageMsg();
 		image_rect_.publish(rect_msg);
-/*
-*/
     }
     catch (cv_bridge::Exception& e)
     {

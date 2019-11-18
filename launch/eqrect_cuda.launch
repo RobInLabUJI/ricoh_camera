@@ -4,7 +4,7 @@
   <arg name="image_height" default="720"/>
   <arg name="rate"         default="15"/>
 
-  <node pkg="nodelet" type="nodelet" name="nodelet_manager"  args="manager"/>
+  <node pkg="nodelet" type="nodelet" name="nodelet_manager"  args="manager" output="screen"/>
 
 <!--
   <node pkg="nodelet" type="nodelet" name="cv_camera" args="load cv_camera/CvCameraNodelet nodelet_manager">
