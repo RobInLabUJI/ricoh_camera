@@ -4,8 +4,8 @@
     <remap from="image" to="/cv_camera/image_raw" />
   </node>
 
-  <node name="image_processed_view" pkg="image_view" type="image_view" respawn="false" output="screen">
-    <remap from="image" to="/cv_camera/image_processed" />
+  <node name="image_rect_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/cv_camera/image_rect" />
   </node>
 
 </launch>

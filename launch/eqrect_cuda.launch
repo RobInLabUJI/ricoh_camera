@@ -6,12 +6,14 @@
 
   <node pkg="nodelet" type="nodelet" name="nodelet_manager"  args="manager"/>
 
+<!--
   <node pkg="nodelet" type="nodelet" name="cv_camera" args="load cv_camera/CvCameraNodelet nodelet_manager">
     <param name="device_id"    value="$(arg device_id)"/>
     <param name="image_width"  value="$(arg image_width)"/>
     <param name="image_height" value="$(arg image_height)"/>
     <param name="rate"         value="$(arg rate)"/>
   </node>
+-->
 
   <node pkg="nodelet" type="nodelet" name="eqrect" args="load ricoh_camera/EqRect nodelet_manager" output="screen">
     <remap from="image_raw"  to="cv_camera/image_raw" />
