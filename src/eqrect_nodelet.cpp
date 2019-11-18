@@ -161,22 +161,24 @@ public:
 		cv::cuda::remap(img_frnt_r, img_rect_frnt, gpumap1_f, gpumap2_f, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 		cv::cuda::remap(img_back_r, img_rect_back, gpumap1_b, gpumap2_b, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 	
-		//s = img_rect_frnt + img_rect_back;
         cv::cuda::add(img_rect_frnt, img_rect_back, s);
-		//hs = img_rect_frnt/2 + img_rect_back/2;
+
 		cv::cuda::addWeighted(img_rect_frnt, 0.5, img_rect_back, 0.5, 0.0, hs);
-/*		
-		cv::cuda::bitwise_and(hs, hs, r2, gpuintersect);
-		cv::cuda::bitwise_and(s, s, r1, gpunot_intersect);
-		//img_rect = r1 + r2;
-		cv::cuda::add(r1, r2, img_rect);
-*/
-/*
-        cv::cuda::multiply(hs, gpuintersect, r2);
-        cv::cuda::multiply(s, gpunot_intersect, r1);
-        cv::cuda::add(r1, r2, img_rect);
-*/
-        s.download(img_rect_host);
+
+        std::vector<cv::cuda::GpuMat> sChannels;
+        cv::cuda::split(s, sChannels);
+        std::vector<cv::cuda::GpuMat> hsChannels;
+        cv::cuda::split(hs, hsChannels);
+        cv::cuda::GpuMat rChannel, gChannel, bChannel;
+        
+        cv::cuda::blendLinear(sChannels[0], hsChannels[0], gpunot_intersect, gpuintersect, rChannel);
+        cv::cuda::blendLinear(sChannels[1], hsChannels[1], gpunot_intersect, gpuintersect, gChannel);
+        cv::cuda::blendLinear(sChannels[2], hsChannels[2], gpunot_intersect, gpuintersect, bChannel);
+
+        cv::cuda::GpuMat result[3] = {rChannel, gChannel, bChannel};
+        cv::cuda::merge(result, 3, img_rect);
+
+        img_rect.download(img_rect_host);
 
 		sensor_msgs::ImagePtr rect_msg = cv_bridge::CvImage(msg->header, msg->encoding, img_rect_host).toImageMsg();
 		image_rect_.publish(rect_msg);
